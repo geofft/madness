@@ -12,17 +12,18 @@
 
 {writeText, writeShellScript, coreutils, which, patchelf, runCommand, gcc9}:
 let
-    stage2_loader = writeShellScript "madness_stage2_loader.sh" ''
+    stage2_loader = pkgs.writeShellScript "madness_stage2_loader.sh" ''
         # echo "[madness] +$0 $@" >&2
         # env >&2
         if [[ "$1" == *-madness_stage1_loader || "$1" == */ld-linux-x86-64.so.2 ]]; then shift; fi
         case $1 in
-        /*) EXECUTABLE=$(${coreutils}/bin/realpath $1 2> /dev/null) ;;
-        *) EXECUTABLE=$(${which}/bin/which $1 2> /dev/null) ;;
+        /*) EXECUTABLE=$(${pkgs.coreutils}/bin/realpath $1 2> /dev/null) ;;
+        *) EXECUTABLE=$(${pkgs.which}/bin/which $1 2> /dev/null) ;;
         esac
         if [ -z "$EXECUTABLE" ]; then echo "[madness] Program $1 is not on the path." >&2; exit 1; fi
         shift
-        LOADER=$(PATH=$(${patchelf}/bin/patchelf --print-rpath "$EXECUTABLE") ${which}/bin/which ld-linux-x86-64.so.2)
+        LOADER=$(PATH=$(${pkgs.patchelf}/bin/patchelf --print-rpath "$EXECUTABLE") ${pkgs.which}/bin/which ld-linux-x86-64.so.2)
+        if [ -z "$LOADER" ]; then LOADER=$(ldd "$EXECUTABLE" | ${pkgs.gnugrep}/bin/grep /lib64/ld-linux-x86-64.so.2 | ${pkgs.coreutils}/bin/cut -f 2 | ${pkgs.coreutils}/bin/cut -d ' ' -f 3); fi
         # echo "[madness] Selected loader: $LOADER; Preload: $MD_PRELOAD" >&2 
         export LD_PRELOAD="$MD_PRELOAD"
         export MADNESS_EXECUTABLE_NAME="$EXECUTABLE"
