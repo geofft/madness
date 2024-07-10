@@ -26,7 +26,7 @@ NixOS 24.05 added an option to enable a stub LD (see the [release notes](https:/
 
 ## What about the nix-ld project?
 
-[nix-ld](https://github.com/Mic92/nix-ld) is a project that is once again very similar to Madness conceptually. The difference is that rather than trying to auto-detect which *version* of `ld` to grab from your Nix store, it requires you to specify one with the `NIX_LD` environment variable. There are pros and cons to both approaches. We like the convenience of auto-detection, and have found that it works pretty well.
+[nix-ld](https://github.com/Mic92/nix-ld) is a project that is once again very similar to Madness conceptually. The difference is that rather than trying to auto-detect which *version* of `ld` to grab from your Nix store, it requires you to specify one with the `NIX_LD` environment variable. There are pros and cons to both approaches. We like the convenience of auto-detection, and have found that it works pretty well. One big advantage of nix-ld is that it correctly preserves the value of `/proc/self/exe` for your process.
 
 ## Does this handle things like LD_PRELOAD correctly?
 
