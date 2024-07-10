@@ -18,6 +18,8 @@ First add the following to your list of module imports:
 
 The module can then be turned on by setting `madness.enable = true;` in your NixOS configuration.
 
+Madness has a feature that for a non-Nix binary will make it try to resolve dynamically which glibc that binary *would* run with in your current environment, and pick an appropriate loader. This feature is disabled by default because today it's implemented by running `ldd`, and `ldd` is [not safe to run on untrusted binaries](https://jmmv.dev/2023/07/ldd-untrusted-binaries.html). You can enable this feature by setting `MADNESS_ALLOW_LDD=1` in your environment. 
+
 # FAQ
 
 ## How does this interact with the new options in NixOS 24.05?

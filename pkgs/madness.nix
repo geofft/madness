@@ -23,7 +23,7 @@ let
         if [ -z "$EXECUTABLE" ]; then echo "[madness] Program $1 is not on the path." >&2; exit 1; fi
         shift
         LOADER=$(PATH=$(${patchelf}/bin/patchelf --print-rpath "$EXECUTABLE") ${which}/bin/which ld-linux-x86-64.so.2)
-        if [ -z "$LOADER" ]; then LOADER=$(ldd "$EXECUTABLE" | ${gnugrep}/bin/grep /lib64/ld-linux-x86-64.so.2 | ${coreutils}/bin/cut -f 2 | ${coreutils}/bin/cut -d ' ' -f 3); fi
+        if [[ "$LOADER" == "" && "$MADNESS_ALLOW_LDD" != "" ]]; then LOADER=$(ldd "$EXECUTABLE" | ${gnugrep}/bin/grep /lib64/ld-linux-x86-64.so.2 | ${coreutils}/bin/cut -f 2 | ${coreutils}/bin/cut -d ' ' -f 3); fi
         # echo "[madness] Selected loader: $LOADER; Preload: $MD_PRELOAD" >&2 
         export LD_PRELOAD="$MD_PRELOAD"
         export MADNESS_EXECUTABLE_NAME="$EXECUTABLE"
